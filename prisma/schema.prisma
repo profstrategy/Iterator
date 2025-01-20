@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+}
+
+
+model CAR_FOR_RENT {
+  id           Int        @id @default(autoincrement())
+  cohort        String
+  main_image   String
+  description  String
+  features String[]
+  tier PLAN
+  payment PAYMENT
+  package_type PACKAGE_TYPE
+  price        Int
+  is_active        RentItem[]
+  created_at   DateTime   @default(now())
+  updated_at   DateTime   @updatedAt
+}
+
+model RentItem {
+  id            Int          @id @default(autoincrement())
+  cohort          String
+  price         Int
+  image       String
+  tier     PLAN
+  features   String[]
+  active_car_id Int
+  is_selected Boolean
+  rent_type PACKAGE_TYPE
+ slug         String     @unique
+ number_available Int
+  active_car    CAR_FOR_RENT @relation(fields: [active_car_id], references: [id])
+  created_at    DateTime     @default(now())
+  updated_at    DateTime     @updatedAt
+}
+
+model CAR_FOR_TOUR {
+  id          Int      @id @default(autoincrement())
+  cohort        String
+  features String[]
+  description String
+  main_image String
+  tier PLAN
+  package_type PACKAGE_TYPE
+  tour_id TourItem[]
+  price        Int
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model TourItem {
+   id            Int          @id @default(autoincrement())
+  cohort          String
+  price         Int
+  image       String
+  slug         String     @unique
+  tier     PLAN
+  features String[]
+  active_sit Int[]
+  active_sit_id Int
+  is_selected Boolean
+  tour_type PACKAGE_TYPE
+  tour_id    CAR_FOR_TOUR @relation(fields: [active_sit_id], references: [id])
+  created_at    DateTime     @default(now())
+  updated_at    DateTime     @updatedAt
+}
+
+enum PLAN {
+  VIP
+  REGULAR
+  DELUXE
+}
+
+enum PACKAGE_TYPE {
+  BOOK_FOR_TOUR
+  BOOK_FOR_RENT
+}
+
+enum PAYMENT {
+  ONE_TIME_PAYMENT
+}
