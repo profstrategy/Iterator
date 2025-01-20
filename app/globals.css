@@ -1,0 +1,161 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-background: #f9fafb;
+}
+
+/* body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+} */
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer base {
+  :root {
+    /* Base colors aligned with brand */
+    --background: #f9fafb; /* Light background */
+    --foreground: #101828; /* Main foreground text color */
+
+    /* Muted variants */
+    --muted: #eaecf0; /* Subtle muted background */
+    --muted-foreground: #344054; /* Slightly muted text foreground */
+
+    /* Surface colors */
+    --popover: #ffffff; /* White for popover backgrounds */
+    --popover-foreground: #101828; /* Foreground for popover */
+    --card: #eef4ff; /* Slightly tinted for cards */
+    --card-foreground: #101828; /* Dark text for cards */
+
+    /* Borders and inputs */
+    --border: #d0d5dd; /* Neutral border */
+    --input: #ffffff; /* Input field background */
+
+    /* Primary colors using brand main */
+    --primary: #1a73e8; /* Brand blue */
+    --primary-foreground: #ffffff; /* White text on primary */
+
+    /* Secondary colors */
+    --secondary: #444ce7; /* Accent blue */
+    --secondary-foreground: #ffffff; /* White text on secondary */
+
+    /* Accent colors */
+    --accent: #0047a4; /* Dark blue accent */
+    --accent-foreground: #ffffff; /* White text for accent */
+
+    /* System colors */
+    --destructive: #fffaeb; /* Yellowish warning */
+    --destructive-foreground: #344054; /* Dark foreground for destructive */
+    --ring: #1a73e8; /* Highlight color for focus rings */
+    --radius: 0.5rem; /* Border radius */
+
+    /* Chart colors using brand palette */
+    --chart-1: #dbf1ff; /* Light brand color */
+    --chart-2: #1a73e8; /* Primary brand blue */
+    --chart-3: #0047a4; /* Darker brand blue */
+    --chart-4: #eef4ff; /* Subtle lighter blue */
+    --chart-5: #344054; /* Dark neutral */
+
+    /* Sidebar styling */
+    --sidebar-background: #eaf3ff; /* Tinted light blue for sidebar */
+    --sidebar-foreground: #101828; /* Foreground for sidebar */
+    --sidebar-primary: #1a73e8; /* Brand blue */
+    --sidebar-primary-foreground: #ffffff; /* White text */
+    --sidebar-accent: #444ce7; /* Secondary accent */
+    --sidebar-accent-foreground: #ffffff; /* White text */
+    --sidebar-border: #d0d5dd; /* Neutral border */
+    --sidebar-ring: #1a73e8; /* Focus ring */
+
+    /* Brand colors */
+    --font-poppins: "Poppins", system-ui, sans-serif;
+    --brand-color-subtle: #eef4ff; /* Subtle brand color */
+    --brand-color-light: #eaf3ff; /* Lightest brand color */
+    --brand-color-main: #1a73e8; /* Main brand color */
+    --brand-color-white: #ffffff; /* White */
+    --brand-color-black: #101828; /* Black */
+    --brand-color-text: #7c8db0; /* Neutral text */
+    --brand-color-text-1: #6e7491;
+
+    /* @layer base {
+      * {
+        @apply border-neutral-300;
+      }
+      body {
+        @apply text-neutral-900;
+        @apply 
+      }
+    } */
+  }
+
+  @layer base {
+    body {
+      font-family: var(--font-poppins);
+      margin: 0;
+      color: #101828;
+      background-color: #ffffff;
+      min-height: 100vh;
+      font-size: 1rem;
+    }
+  }
+
+  .dark {
+    /* Dark theme variations */
+
+    --background: #101828; /* Dark background */
+    --foreground: #eef4ff; /* Light foreground text */
+
+    --muted: #344054; /* Muted background */
+    --muted-foreground: #d0d5dd; /* Muted text */
+
+    --popover: #344054; /* Popover background */
+    --popover-foreground: #ffffff; /* Foreground for popover */
+
+    --card: #344054; /* Card background */
+    --card-foreground: #eef4ff; /* Light text for cards */
+
+    --border: #d0d5dd; /* Neutral border */
+    --input: #444ce7; /* Input field background */
+
+    --primary: #1a73e8; /* Same brand blue */
+    --primary-foreground: #ffffff; /* White text on primary */
+
+    --secondary: #444ce7; /* Secondary color */
+    --secondary-foreground: #ffffff; /* White text on secondary */
+
+    --accent: #0047a4; /* Dark blue accent */
+    --accent-foreground: #ffffff; /* White text for accent */
+
+    --destructive: #fffaeb; /* Warning background */
+    --destructive-foreground: #344054; /* Warning foreground */
+    --ring: #1a73e8; /* Focus ring */
+
+    --chart-1: #dbf1ff; /* Light brand color */
+    --chart-2: #1a73e8; /* Primary brand blue */
+    --chart-3: #0047a4; /* Darker brand blue */
+    --chart-4: #eef4ff; /* Subtle lighter blue */
+    --chart-5: #344054; /* Dark neutral */
+
+    --sidebar-background: #101828; /* Dark background */
+    --sidebar-foreground: #eef4ff; /* Foreground for sidebar */
+    --sidebar-primary: #1a73e8; /* Brand blue */
+    --sidebar-primary-foreground: #ffffff; /* White text */
+    --sidebar-accent: #444ce7; /* Secondary accent */
+    --sidebar-accent-foreground: #ffffff; /* White text */
+    --sidebar-border: #d0d5dd; /* Neutral border */
+    --sidebar-ring: #1a73e8; /* Focus ring */
+  }
+}
+
+.grid-cols-auto-fit {
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-template-rows: repeat(auto-fit, minmax(100px, 1fr));
+  margin: auto 1rem;
+}

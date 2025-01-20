@@ -1,0 +1,4 @@
+export const PACKAGE_TYPES = {
+    BOOK_FOR_RENT: 'BOOK_FOR_RENT',
+    BOOK_FOR_TOUR: 'BOOK_FOR_TOUR'
+  };
