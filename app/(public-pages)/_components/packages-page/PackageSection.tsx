@@ -1,14 +1,13 @@
 'use client'
 import { PACKAGE_TYPES } from '@/constants/generic'
-import { addSearchParamToUrl } from '@/lib/utils'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/navigation'
 import React from 'react'
-import { packages } from '../landing-page/ActivePackages'
-import Packages from './packages'
+// import { packages } from '../landing-page/ActivePackages'
 import { whiteSpaces } from '@/utilities/globalspace'
 import { FaSearch } from 'react-icons/fa'
 import { AppHeading } from '@/components/reusables/AppHeading'
+import { addSearchParamsToUrl } from '@/lib/utils'
 
 const PackageSection = () => {
     const pathname = usePathname()
@@ -24,7 +23,7 @@ const PackageSection = () => {
     const updateSearchParam = React.useCallback((
         type: string, search?: string
     ) => {
-        const newUrl = addSearchParamToUrl(pathname ?? '/', {
+        const newUrl = addSearchParamsToUrl(pathname ?? '/', {
             type: type.toLowerCase(),
             search: search || ''
         })
@@ -101,9 +100,9 @@ const PackageSection = () => {
 
                     <div className={`grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4`}>
 
-                        {packages.map((pkg) => (
+                        {/* {packages.map((pkg) => (
                             <Packages theme='light' pkg={pkg} key={pkg.id} />
-                        ))}
+                        ))} */}
 
                     </div>
                 </div>

@@ -159,3 +159,18 @@
   grid-template-rows: repeat(auto-fit, minmax(100px, 1fr));
   margin: auto 1rem;
 }
+
+@keyframes shimmer {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
+}
+
+.animate-shimmer {
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+

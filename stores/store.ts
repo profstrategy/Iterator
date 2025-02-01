@@ -1,22 +1,35 @@
-import { AxiosError } from "axios";
+import { SegregatedPackages } from "@/constants/types";
 import { createStore } from "zustand";
+import { persist } from 'zustand/middleware'
+
 
 type State = {
-  error: Error | AxiosError | null;
+  slug: SegregatedPackages[] | null ,
+  overviewLoading: boolean
 };
 
 type Action = {
-  setError: (error: State["error"]) => void;
+  setSlug: (slug: State["slug"]) => void;
+  setLoadingOverview: (isLoading: State['overviewLoading']) => void
 };
 
 export type Store = State & Action;
 
 const defaultState: State = {
-  error: null,
+ slug: [],
+ overviewLoading: false
 };
 
-export const CreateGlobalStore = (initialState: State = defaultState) =>
-  createStore<Store>()((set) => ({
-    ...initialState,
-    setError: (error) => set(() => ({ error })),
-  }));
+
+const CreateGlobalStore = (initialState: State = defaultState) =>
+  createStore<Store>()(
+persist(
+  (set) => ({
+   ...initialState,
+    setSlug: (slug) => set({ slug }),
+    setLoadingOverview: (overviewLoading) => set({ overviewLoading })
+  }),{
+    name: 'package-store'
+  }
+))
+export const globalStore = CreateGlobalStore();

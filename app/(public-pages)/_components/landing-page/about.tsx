@@ -17,7 +17,7 @@ const about = [
 
 const AboutSection = () => {
     return (
-        <div className={`${whiteSpaces.paddingX} w-full m-auto`}>
+        <div className={`${whiteSpaces.paddingX} w-full m-auto`} id='#about'>
             <AppHeading variant="h2"
                 className="text-2xl sm:text-3xl md:text-4xl text-brand-color mb-14">
                 Who We Are

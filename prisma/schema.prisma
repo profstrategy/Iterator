@@ -1,77 +1,66 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
-
 
 model CAR_FOR_RENT {
-  id           Int        @id @default(autoincrement())
-  cohort        String
+  id           Int               @id @default(autoincrement())
+  cohort       String
   main_image   String
   description  String
-  features String[]
-  tier PLAN
-  payment PAYMENT
   package_type PACKAGE_TYPE
   price        Int
-  is_active        RentItem[]
-  created_at   DateTime   @default(now())
-  updated_at   DateTime   @updatedAt
-}
-
-model RentItem {
-  id            Int          @id @default(autoincrement())
-  cohort          String
-  price         Int
-  image       String
-  tier     PLAN
-  features   String[]
-  active_car_id Int
-  is_selected Boolean
-  rent_type PACKAGE_TYPE
- slug         String     @unique
- number_available Int
-  active_car    CAR_FOR_RENT @relation(fields: [active_car_id], references: [id])
-  created_at    DateTime     @default(now())
-  updated_at    DateTime     @updatedAt
+  created_at   DateTime          @default(now())
+  updated_at   DateTime          @updatedAt
+  images       String[]
+  tier         PLAN
+  rent_id      SingularPackage[] @relation("ActiveCarRelation")
 }
 
 model CAR_FOR_TOUR {
-  id          Int      @id @default(autoincrement())
-  cohort        String
-  features String[]
-  description String
-  main_image String
-  tier PLAN
+  id           Int               @id @default(autoincrement())
+  cohort       String
+  description  String
+  main_image   String
+  tier         PLAN
   package_type PACKAGE_TYPE
-  tour_id TourItem[]
   price        Int
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  created_at   DateTime          @default(now())
+  updated_at   DateTime          @updatedAt
+  images       String[]
+  tour_id      SingularPackage[] @relation("ActiveSitRelation")
 }
 
-model TourItem {
-   id            Int          @id @default(autoincrement())
-  cohort          String
-  price         Int
-  image       String
-  slug         String     @unique
-  tier     PLAN
-  features String[]
-  active_sit Int[]
-  active_sit_id Int
-  is_selected Boolean
-  tour_type PACKAGE_TYPE
-  tour_id    CAR_FOR_TOUR @relation(fields: [active_sit_id], references: [id])
-  created_at    DateTime     @default(now())
-  updated_at    DateTime     @updatedAt
+model SingularPackage {
+  id            Int           @id @default(autoincrement())
+  cohort        String
+  main_image    String
+  tier          PLAN 
+  slug          String        @unique
+  features      String[]
+  payment       String
+  active_sit_id Int?
+  active_car_id Int?
+  is_selected   Boolean
+  package_type  PACKAGE_TYPE
+  created_at    DateTime      @default(now())
+  updated_at    DateTime      @updatedAt
+  rent_price    Int?
+  tour_price    Int?
+  description   String[]
+  active_sit    ActiveSit?    @relation("ActiveSitRelation")
+  active_car    CAR_FOR_RENT? @relation("ActiveCarRelation", fields: [active_car_id], references: [id])
+  tour_id       CAR_FOR_TOUR? @relation("ActiveSitRelation", fields: [active_sit_id], references: [id])
+}
+
+model ActiveSit {
+  id         Int             @id @default(autoincrement())
+  value      String[]
+  tourItemId SingularPackage @relation("ActiveSitRelation", fields: [id], references: [id])
 }
 
 enum PLAN {
@@ -83,8 +72,4 @@ enum PLAN {
 enum PACKAGE_TYPE {
   BOOK_FOR_TOUR
   BOOK_FOR_RENT
-}
-
-enum PAYMENT {
-  ONE_TIME_PAYMENT
 }

@@ -10,12 +10,10 @@ import { usePathname, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { LiaTimesSolid } from 'react-icons/lia'
 import { FaBarsStaggered } from 'react-icons/fa6'
-import NotFound from '@/not-found'
 
 
-const handleClick = (id:string) => {
+const handleClick = (id?:string) => {
 const targetElement = document.getElementById(`${id}`)
-const router = useRouter()
 
 if(targetElement){
     
@@ -23,8 +21,6 @@ if(targetElement){
         behavior: 'smooth'
     })
     
-}else{
-    router.push(`${<NotFound />}`)
 }
 }
 
@@ -64,13 +60,12 @@ const DesktopNavLinks = ({ navItems, activeItem, setActiveItem }: DeskTopNavProp
             {navItems.map((item) => (
                 <li
                     key={item.id}
-                    onClick={() => handleClick(item.id)}
                     className={` hover:text-hover-color transition-all duration-[0.5s] ease-[cubic-bezier(0.645,0.045,0.355,1)] delay-[400] cursor-pointer ${item.id === activeItem
                         ? 'text-brand-color-text font-bold'
                         : `text-${brandColors.dark_blue}`
                         }`}
                 >
-                    <Link href={item.id}>{item.content}</Link>
+                    { item.id === 'about' ? <a href={`#${item.id}`}>{item.content}</a> : <Link href={item.id}>{item.content}</Link>}
                 </li>
             ))}
         </div>
@@ -163,7 +158,7 @@ const Navbar = () => {
 
     const navItems: NavItem[] = [
         { id: '/', content: 'Home' },
-        // { id: 'about', content: 'About' },
+        { id: 'about', content: 'About' },
         { id: 'packages', content: 'Packages' },
     ]
 

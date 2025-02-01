@@ -1,15 +1,12 @@
-import { SegregatedPackage } from '@/constants/types';
+"use client"
+import { SegregatedPackages } from '@/constants/types';
 import { CLIENT_ROUTE } from '@/lib/route';
+import { removeNoneAlphanumericEntity } from '@/lib/utils';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React from 'react'
 
-interface PackageProps {
-    pkg: SegregatedPackage;
-    theme?: 'light' | 'dark';
-}
-
-export const extractUlFromFeature = (feature: string) => {
+export const extractUlFromFeature = (feature?: string) => {
     if (!feature) return '';
     const ulMatch = feature.match(/<ul>(.*?)<\/ul>/);
     if (ulMatch) {
@@ -18,7 +15,12 @@ export const extractUlFromFeature = (feature: string) => {
     return feature;
 };
 
-const Packages = ({ theme = 'light', pkg }: PackageProps) => {
+interface PackagesProps {
+    pkg: SegregatedPackages,
+    theme: "light" | "dark"
+}
+
+const Packages = ({ theme = 'light', pkg }:PackagesProps) => {
     const router = useRouter()
     const themeStyles = {
         light: {
@@ -58,8 +60,8 @@ const Packages = ({ theme = 'light', pkg }: PackageProps) => {
             <div className="flex-1">
                 <div className='w-full h-48 relative'>
                     <Image
-                        src={pkg.image}
-                        alt={pkg.id}
+                        src={pkg.main_image}
+                        alt={pkg.id as unknown as string}
                         fill
                         quality={100}
                         className='object-contain'
@@ -69,7 +71,7 @@ const Packages = ({ theme = 'light', pkg }: PackageProps) => {
                     <div
                         className={`w-6 h-6 rounded-full ${styles.iconBg} flex items-center justify-center`}
                     >
-                        {pkg.tier.toUpperCase() === 'STANDARD' && (
+                        {pkg.tier.toUpperCase() === 'REGULAR' && (
                             <span className={styles.text.primary}>★</span>
                         )}
                         {pkg.tier.toUpperCase() === 'VIP' && (
@@ -80,7 +82,7 @@ const Packages = ({ theme = 'light', pkg }: PackageProps) => {
                         )}
                     </div>
                     <span className={`text-sm ${styles.text.tertiary} uppercase`}>
-                        {pkg?.type} - {pkg.tier}
+                        {removeNoneAlphanumericEntity(pkg?.package_type)} - {pkg.tier}
                     </span>
                     {pkg.tier.toUpperCase() === 'VIP' && (
                         <span
@@ -95,13 +97,13 @@ const Packages = ({ theme = 'light', pkg }: PackageProps) => {
                     {pkg.cohort}
                 </h3>
                 <p className={`text-2xl font-bold ${styles.text.primary} mb-4`}>
-                    {pkg.price}
+                    {removeNoneAlphanumericEntity(pkg.package_type.toUpperCase()) === "BOOK FOR TOUR" ? pkg?.tour_price : pkg?.rent_price}
                 </p>
                 <p className={`text-sm ${styles.text.tertiary} mb-6`}>
-                    {pkg.paymentPlan}
+                    {pkg.payment}
                 </p>
 
-                <ul className="space-y-4">
+                <ul className="space-y-3">
                     {pkg.features?.map((feature, index) => (
                         <li
                             key={index}
@@ -122,7 +124,7 @@ const Packages = ({ theme = 'light', pkg }: PackageProps) => {
 
             <button
                 className={`w-full mt-6 py-2 text-sm font-medium ${styles.text.primary} bg-transparent border ${styles.border} rounded ${styles.button} transition-colors duration-300`}
-            onClick={() => router.push(CLIENT_ROUTE.publicRoute.packages.id(pkg.tier))}
+            onClick={() => router.push(CLIENT_ROUTE.publicRoute.packages.id(pkg.package_type, pkg.tier, pkg.slug ))}
             >
                 Learn more →
             </button>
