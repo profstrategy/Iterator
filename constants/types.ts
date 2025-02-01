@@ -1,4 +1,4 @@
-import { StaticImageData } from "next/image";
+import { PLAN, PACKAGE_TYPE, ActiveSit } from '@prisma/client'
 
 export interface NavItem {
   content: string;
@@ -47,13 +47,35 @@ export type BrandItem = {
   brand: string;
 };
 
-export type SegregatedPackage = {
-  id: string;
-  type: 'book for tour' | 'book for rent';
-  tier: string;
-  cohort: string;
-  price: string;
-  paymentPlan: string;
-  features: string[];
-  image: string |StaticImageData
-};
+export interface SegregatedPackages {
+    id: number;
+    cohort: string;
+    tour_price: number | null;
+    rent_price: number | null;
+    main_image: string;
+    slug: string; 
+    tier: PLAN;
+    description: string[]
+    features?: string[];
+    payment: string;
+    active_sit: ActiveSit | null; 
+    active_sit_id: number | null;
+    active_car_id: number | null;
+    is_selected: boolean;
+    package_type: PACKAGE_TYPE; 
+    created_at: Date;
+    updated_at: Date;
+}
+
+export interface SegregatedPackagesByType {
+  id: number,
+  cohort: string
+  description: string,
+  main_image: string,
+  tier: PLAN,
+  package_type: PACKAGE_TYPE,
+  price: number,
+  created_at: Date,
+  updated_at: Date,
+  images: string
+}

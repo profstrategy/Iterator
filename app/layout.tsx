@@ -3,10 +3,11 @@ import { Poppins } from 'next/font/google'
 import "./globals.css";
 import Navbar from "@/components/reusables/navbar";
 import Footer from "@/components/reusables/footer";
+import { GlobalStore } from "@/provider/store-provider";
 
 const poppins = Poppins({
   subsets: ['latin'],
-  weight: [ "100", "200" , "300", "400", "500", "600", "700", "800", "900" ],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   variable: '--font-poppins',
   display: 'swap'
 })
@@ -32,9 +33,11 @@ export default function RootLayout({
       <body
         className={`${poppins.className} ${poppins.className} max-w-screen-2xl mx-auto suppressHydrationWarning={true}`}
       >
-        <Navbar />
-        {children}
-        <Footer />
+        <GlobalStore>
+          <Navbar />
+          {children}
+          <Footer />
+        </GlobalStore>
       </body>
     </html>
   );
