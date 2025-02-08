@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React, { useEffect } from "react";
-import { addSearchParamsToUrl} from "@/lib/utils";
+import { addSearchParamsToUrl, removeNoneAlphanumericEntity } from "@/lib/utils";
 import { useGlobalStore } from "@/provider/store-provider";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SLUG_TYPES } from "@/constants/generic";
@@ -44,20 +44,11 @@ const SingularPackage = ({ pkg }: { pkg: SegregatedPackages[] }) => {
   const currentSearch = searchParam.get('search') as (typeof SLUG_TYPES[keyof typeof SLUG_TYPES])
   const router = useRouter()
 
-  const [activeTier, setActiveTier] = React.useState<typeof PLAN[keyof typeof PLAN]>(currentTier)
+  const [activeTier, setActiveTier] = React.useState<typeof PLAN[keyof typeof PLAN] | null>(currentTier)
   const [searchTerm, setSearchTerm] = React.useState<typeof SLUG_TYPES[keyof typeof SLUG_TYPES]>(currentSearch)
-  const [packageCard, setPackageCard] = React.useState<SegregatedPackages | undefined | null>(null)
+  const [activeParentTab, setActiveParentTab] = React.useState("overview");
 
   const dynamicTier = pkg.find(itm => itm.tier === activeTier);
-  const dynamicSlug = pkg.find(itm => itm.tier === searchTerm);
-
-  useEffect(() => {
-    const handleCardGenerate = () => {
-      return setPackageCard(dynamicTier)
-    }
-    document.addEventListener('DOMContentLoaded', handleCardGenerate)
-    console.log(dynamicTier)
-  }, [])
 
   const updateUrlWithSearchParams = React.useCallback((tier: string, search: string) => {
     const newUrl = addSearchParamsToUrl(pathname, {
@@ -73,9 +64,15 @@ const SingularPackage = ({ pkg }: { pkg: SegregatedPackages[] }) => {
     updateUrlWithSearchParams(tier, search)
     setActiveTier(tier)
     setSearchTerm(search)
-    setPackageCard(dynamicTier);
-    // console.log(dynamicTier)
   }, [updateUrlWithSearchParams])
+
+  const handleParentTabChange = (value: string) => {
+    setActiveParentTab(value);
+
+    if (value === "pricing-details") {
+      setActiveTier(null);
+    }
+  };
 
   const getCategoryIcon = (tier: string | undefined) => {
     if (!tier) return null;
@@ -103,7 +100,7 @@ const SingularPackage = ({ pkg }: { pkg: SegregatedPackages[] }) => {
     );
   }
 
-  const isVIP = dynamicSlug?.tier === 'VIP'
+  const isVIP = dynamicTier?.tier === 'VIP'
 
 
   return (
@@ -123,7 +120,7 @@ const SingularPackage = ({ pkg }: { pkg: SegregatedPackages[] }) => {
                   variant="secondary"
                   className="px-3 py-1 text-xs sm:text-sm font-medium"
                 >
-                  {itm?.package_type?.toUpperCase() ?? 'NO TYPE'}
+                  {removeNoneAlphanumericEntity(itm?.package_type?.toUpperCase()) ?? 'NO TYPE'}
                 </Badge>
                 <Badge
                   variant={itm?.is_selected ? 'default' : 'destructive'}
@@ -135,7 +132,9 @@ const SingularPackage = ({ pkg }: { pkg: SegregatedPackages[] }) => {
             </motion.div>
           </motion.div>
 
-          <Tabs defaultValue="overview" className="w-full">
+          <Tabs value={activeParentTab}
+            onValueChange={handleParentTabChange}
+            className="w-full">
             <TabsList className="mb-6 p-1 bg-gray-100/80 rounded-lg w-full flex-nowrap gap-2">
 
               <TabsTrigger
@@ -159,6 +158,7 @@ const SingularPackage = ({ pkg }: { pkg: SegregatedPackages[] }) => {
                   value={`VIP`}
                   className="flex-1 transition-all duration-200 text-sm sm:text-base data-[state=active]:bg-brand-color-text data-[state=active]:text-white data-[state=active]:shadow-sm"
                   onClick={() => handleTabChange('VIP', `${itm?.slug}`)}
+
                 >
                   VIP
                 </TabsTrigger>
@@ -167,6 +167,7 @@ const SingularPackage = ({ pkg }: { pkg: SegregatedPackages[] }) => {
                   value={`DELUXE`}
                   className="flex-1 transition-all duration-200 text-sm sm:text-base data-[state=active]:bg-brand-color-text data-[state=active]:text-white data-[state=active]:shadow-sm"
                   onClick={() => handleTabChange('DELUXE', `${itm?.slug}`)}
+
                 >
                   DELUXE
                 </TabsTrigger>
@@ -175,75 +176,82 @@ const SingularPackage = ({ pkg }: { pkg: SegregatedPackages[] }) => {
                   value={`REGULAR`}
                   className="flex-1 transition-all duration-200 text-sm sm:text-base data-[state=active]:bg-brand-color-text data-[state=active]:text-white data-[state=active]:shadow-lg"
                   onClick={() => handleTabChange('REGULAR', `${itm?.slug}`)}
+
                 >
 
                   REGULAR
                 </TabsTrigger>
               </TabsList>
             </Tabs>
-            
-            <TabsContent value="overview">{ itm?.description}</TabsContent>
 
-            <TabsContent value="pricing-details"> <motion.div variants={fadeInUp}>
-              
-                  <Card
-                  className={`flex flex-col h-full p-4 sm:p-6 hover:shadow-lg transition-all duration-300 border
-                                                      ${isVIP ? 'bg-gradient-to-br from-yellow-50 to-white border-yellow-300 hover:border-yellow-400 scale-100' : 'hover:border-brand-color/20'}`}
-                >
-                  <div>
-                    <div className="flex items-center justify-between mb-2 sm:mb-4">
-                      <h3 className="text-lg sm:text-xl font-semibold capitalize text-gray-800 flex items-center gap-2">
-                        {getCategoryIcon(packageCard?.tier)}
-                       {packageCard?.tier}
-                      </h3>
-                      {isVIP && (
-                        <Badge className="bg-yellow-500">VIP</Badge>
-                      )}
-                    </div>
-                    <p
-                      className={`text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 ${isVIP ? 'text-yellow-600' : 'text-brand-color'}`}
-                    >
-                      ₦
-                       {packageCard?.package_type === 'BOOK_FOR_RENT' ? parseFloat(packageCard.rent_price as unknown as string ?? '0').toLocaleString('en-US') : itm?.package_type === 'BOOK_FOR_TOUR' ? parseFloat(itm.tour_price as unknown as string ?? '0').toLocaleString('en-US') : null}
-                    </p>
-                    <div className="space-y-2 sm:space-y-4 mb-4 sm:mb-6">
+            <TabsContent value="overview">{itm?.description}</TabsContent>
+
+            <TabsContent value="pricing-details">
+              <motion.div variants={fadeInUp}>
+
+                <Card
+                  className={`flex flex-col h-full p-4 sm:p-6 md:w-4/6 hover:shadow-lg transition-all duration-300 border
+                  ${isVIP ? 'bg-gradient-to-br from-yellow-50 to-white border-yellow-300 hover:border-yellow-400 scale-100' : 'hover:border-brand-color/20'}`}
+                >{slug.map((itm) => (
+                  <>
+                    <div>
+                      <div className="flex items-center justify-between mb-2 sm:mb-4">
+                        <h3 className="text-lg sm:text-xl font-semibold capitalize text-gray-800 flex items-center gap-2">
+                          {getCategoryIcon(itm?.tier)}
+                          {itm?.tier}
+                        </h3>
+                        {isVIP && (
+                          <Badge className="bg-yellow-500">VIP</Badge>
+                        )}
+                      </div>
+                      <p
+                        className={`text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 ${isVIP ? 'text-yellow-600' : 'text-brand-color'}`}
+                      >
+                        ₦
+                        { removeNoneAlphanumericEntity(itm.package_type) === 'BOOK FOR RENT' ? parseFloat(itm.rent_price as unknown as string ?? '0').toLocaleString('en-US') : removeNoneAlphanumericEntity(itm?.package_type) === 'BOOK FOR TOUR' ? parseFloat(itm.tour_price as unknown as string ?? '0').toLocaleString('en-US') : null}
+                      </p>
+                      <div className="space-y-2 sm:space-y-4 mb-4 sm:mb-6">
                         <div className="flex items-center gap-2 text-sm text-gray-700 bg-gray-50 p-2 rounded-lg">
                           <CalendarIcon className="h-4 w-4 text-brand-color" />
                           <span>
-                            {parseFloat(itm?.payment as unknown as string ?? '0').toLocaleString('en-US')}
+                            {itm?.payment}
                           </span>
                         </div>
+                      </div>
+                      <AppButton
+                        variant="primary"
+
+                      >
+                        Book Now
+                      </AppButton>
                     </div>
-                    <AppButton
-                      variant="primary"
-                    
-                    >
-                      Book Now
-                    </AppButton>
-                  </div>
-  
+
                     {itm?.features?.map((itm) => (
                       <div className="mt-3 pt-3 border-t border-gray-200">
-                      <div className="prose prose-sm max-w-none text-xs sm:text-sm">
-                        <li
-                          className={`text-sm  flex items-start gap-2`}
-                        >
-                          <div className="">
-                            <ul
-                              className="flex flex-col gap-2"
-                              dangerouslySetInnerHTML={{
-                                __html: extractUlFromFeature(
-                                  itm
-                                ),
-                              }}
-                            />
-                          </div>
-                        </li>
+                        <div className="prose prose-sm max-w-none text-xs sm:text-sm">
+                          <li
+                            className={`text-sm  flex items-start gap-2`}
+                          >
+                            <div className="">
+                              <ul
+                                className="flex flex-col gap-2"
+                                dangerouslySetInnerHTML={{
+                                  __html: extractUlFromFeature(
+                                    itm
+                                  ),
+                                }}
+                              />
+                            </div>
+                          </li>
+                        </div>
                       </div>
-                    </div>
-                    ))}
+                    ))
+                    }
+                  </>
+                ))}
+
                 </Card>
-            </motion.div>
+              </motion.div>
             </TabsContent>
           </Tabs>
         </div>

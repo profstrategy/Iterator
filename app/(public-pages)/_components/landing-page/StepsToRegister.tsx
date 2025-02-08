@@ -92,10 +92,10 @@ const StepsToRegister = () => {
               {step.icon}
               </div>
             <div className="flex items-center gap-4 mb-4">
-              <span className="w-8 h-8 flex items-center justify-center bg-brand-color text-brand-color-text-1 rounded-full text-sm font-semibold">
+              <span className="w-8 h-8 flex items-center justify-center bg-brand-color-light text-brand-color-text-1 rounded-full text-sm font-semibold">
                 {step.id}
               </span>
-              <h3 className="text-lg font-semibold text-brand-color">
+              <h3 className="text-lg font-semibold text-brand-color grid m-auto">
                 {step.title}
               </h3>
             </div>

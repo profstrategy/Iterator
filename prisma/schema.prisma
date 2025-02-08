@@ -70,6 +70,6 @@ enum PLAN {
 }
 
 enum PACKAGE_TYPE {
-  BOOK_FOR_TOUR
-  BOOK_FOR_RENT
+  book_for_tour
+  book_for_rent
 }
